@@ -9,14 +9,14 @@ import (
 )
 
 type ProductsParams struct {
-	Length     int64
+	Length int64
 }
 
 type ProductsResult struct {
-	Result string
+	Result     string
 	Spongecase string
-	L33t string
-	AsciiOnly string
+	L33t       string
+	AsciiOnly  string
 }
 
 func convertToSpongecase(in string) string {

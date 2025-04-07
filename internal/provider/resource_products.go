@@ -25,9 +25,9 @@ func NewProductsResource() resource.Resource {
 type ProductsResource struct {
 	ID         types.String `tfsdk:"id"`
 	Length     types.Int64  `tfsdk:"length"`
-	Spongecase types.String   `tfsdk:"spongecase"`
-	L33t       types.String   `tfsdk:"l33t"`
-	AsciiOnly types.String   `tfsdk:"ascii_only"`
+	Spongecase types.String `tfsdk:"spongecase"`
+	L33t       types.String `tfsdk:"l33t"`
+	AsciiOnly  types.String `tfsdk:"ascii_only"`
 	Result     types.String `tfsdk:"result"`
 }
 
@@ -117,7 +117,7 @@ func (r *ProductsResource) Create(ctx context.Context, req resource.CreateReques
 		return
 	}
 	params := products.ProductsParams{
-		Length:     plan.Length.ValueInt64(),
+		Length: plan.Length.ValueInt64(),
 	}
 
 	result, err := params.ReturnProduct()
@@ -131,7 +131,6 @@ func (r *ProductsResource) Create(ctx context.Context, req resource.CreateReques
 	plan.AsciiOnly = types.StringValue(result.AsciiOnly)
 	plan.ID = types.StringValue("none")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
-
 
 }
 
