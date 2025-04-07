@@ -7,14 +7,10 @@ import (
 	"context"
 	"terraform-provider-slumpmassig/internal/products"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -28,10 +24,9 @@ func NewProductsResource() resource.Resource {
 // ExampleResource defines the resource implementation.
 type ProductsResource struct {
 	ID         types.String `tfsdk:"id"`
-	Length     types.Int64  `tfsdk:"length"`
-	Spongecase types.String   `tfsdk:"spongecase"`
-	L33t       types.String   `tfsdk:"l33t"`
-	Diacritics types.String   `tfsdk:"diacritics"`
+	Spongecase types.String `tfsdk:"spongecase"`
+	L33t       types.String `tfsdk:"l33t"`
+	AsciiOnly  types.String `tfsdk:"ascii_only"`
 	Result     types.String `tfsdk:"result"`
 }
 
@@ -51,18 +46,18 @@ func (r *ProductsResource) Schema(ctx context.Context, req resource.SchemaReques
 		Description: "Get random products of a known swedish warehouse.",
 		Attributes: map[string]schema.Attribute{
 
-			"length": schema.Int64Attribute{
-				Description: "The maximum length of the generated product",
-				Optional:    true,
-				Computed:   true,
-				Default:     int64default.StaticInt64(0),
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.RequiresReplace(),
-				},
-				Validators: []validator.Int64{
-					int64validator.AtLeast(5),
-				},
-			},
+			// "length": schema.Int64Attribute{
+			// 	Description: "The maximum length of the generated product",
+			// 	Optional:    true,
+			// 	Computed:   true,
+			// 	Default:     int64default.StaticInt64(0),
+			// 	PlanModifiers: []planmodifier.Int64{
+			// 		int64planmodifier.RequiresReplace(),
+			// 	},
+			// 	Validators: []validator.Int64{
+			// 		int64validator.AtLeast(5),
+			// 	},
+			// },
 
 			"spongecase": schema.StringAttribute{
 				Description: "The generated random product in sponge case. Default value is `false`.",
@@ -81,8 +76,8 @@ func (r *ProductsResource) Schema(ctx context.Context, req resource.SchemaReques
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"diacritics": schema.StringAttribute{
-				Description: "The generated random product with converted diacritics . Default value is `false`.",
+			"ascii_only": schema.StringAttribute{
+				Description: "The generated random product with removced diacritics characters . Default value is `false`.",
 				Sensitive:   true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -120,9 +115,7 @@ func (r *ProductsResource) Create(ctx context.Context, req resource.CreateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	params := products.ProductsParams{
-		Length:     plan.Length.ValueInt64(),
-	}
+	params := products.ProductsParams{}
 
 	result, err := params.ReturnProduct()
 	if err != nil {
@@ -132,10 +125,9 @@ func (r *ProductsResource) Create(ctx context.Context, req resource.CreateReques
 	plan.Result = types.StringValue(result.Result)
 	plan.Spongecase = types.StringValue(result.Spongecase)
 	plan.L33t = types.StringValue(result.L33t)
-	plan.Diacritics = types.StringValue(result.Diacritics)
+	plan.AsciiOnly = types.StringValue(result.AsciiOnly)
 	plan.ID = types.StringValue("none")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
-
 
 }
 
