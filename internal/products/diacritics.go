@@ -115,6 +115,7 @@ func removeDiacritics(str string) string {
 	reg := regexp.MustCompile("[^\u0000-\u007E]")
 	return reg.ReplaceAllStringFunc(str, func(a string) string {
 		r, _ := utf8.DecodeRuneInString(a)
+		//nolint:all // linting diacriticsMap is not a map of runes
 		if replacement, ok := diacriticsMap[rune(r)]; ok {
 			return replacement
 		}

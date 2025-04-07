@@ -24,7 +24,6 @@ func NewProductsResource() resource.Resource {
 // ExampleResource defines the resource implementation.
 type ProductsResource struct {
 	ID         types.String `tfsdk:"id"`
-	Length     types.Int64  `tfsdk:"length"`
 	Spongecase types.String `tfsdk:"spongecase"`
 	L33t       types.String `tfsdk:"l33t"`
 	AsciiOnly  types.String `tfsdk:"ascii_only"`
@@ -116,9 +115,7 @@ func (r *ProductsResource) Create(ctx context.Context, req resource.CreateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	params := products.ProductsParams{
-		Length: plan.Length.ValueInt64(),
-	}
+	params := products.ProductsParams{}
 
 	result, err := params.ReturnProduct()
 	if err != nil {

@@ -36,7 +36,7 @@ func convertToSpongecase(in string) string {
 	return string(out)
 }
 
-// ReturnProduct generates a random product name based on the parameters
+// ReturnProduct generates a random product name based on the parameters.
 func (p *ProductsParams) ReturnProduct() (ProductsResult, error) {
 	var err error
 	var product_results ProductsResult
