@@ -8,5 +8,3 @@ terraform {
 
 provider "slumpmassig" {}
 
-resource "slumpmassig_products" "example" {
-}
